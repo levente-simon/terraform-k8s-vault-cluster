@@ -1,0 +1,40 @@
+global:
+  enabled: true
+  tlsDisable: false
+injector:
+  enabled: false
+server:
+  extraEnvironmentVars:
+    VAULT_CACERT: /vault/userconfig/vault-ca-crt/tls.crt
+  extraVolumes:
+    - type: secret
+      name: tls-server
+    - type: secret
+      name: vault-ca-crt
+  auditStorage:
+    enabled: true
+    size:  "6Gi"
+  standalone:
+    enabled: false
+  service:
+    annotations: 
+      external-dns.alpha.kubernetes.io/hostname: %s
+    type: "LoadBalancer"
+  dataStorage:
+    size: "6Gi"
+  ha:
+    enabled: true
+    replicas: 3
+    raft:
+      enabled: true
+      setNodeId: true
+      config: |
+%s
+ui:
+  enabled: true
+  annotations: 
+    external-dns.alpha.kubernetes.io/hostname: %s
+  serviceType: "LoadBalancer"
+  serviceNodePort: null
+  externalPort: 8200
+  # loadBalancerIP: "192.168.20.238/32"
