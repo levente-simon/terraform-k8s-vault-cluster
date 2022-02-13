@@ -18,31 +18,30 @@ variable "tls_key" {
 variable "k8s_host" {
   type      = string
   sensitive = true
-  default   = null
 }
 
 variable "k8s_client_certificate" {
   type      = string
   sensitive = true
-  default   = null
+  default   = ""
 }
 
 variable "k8s_client_key" {
   type      = string
   sensitive = true
-  default   = null
+  default   = ""
 }
 
 variable "k8s_cluster_ca_certificate" {
   type      = string
   sensitive = true
-  default   = null
+  default   = ""
 }
 
 variable "k8s_cluster_client_token" {
   type      = string
   sensitive = true
-  default   = null
+  default   = ""
 }
 
 variable "nr_of_vault_pods" { 
