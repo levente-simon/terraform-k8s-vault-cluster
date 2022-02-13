@@ -1,15 +1,49 @@
 variable "k8s_config_path"            { type = string }
 variable "vault_host"                 { type = string }
 variable "vault_ui_host"              { type = string }
-variable "tls_crt"                    { type = string }
-variable "tls_key"                    { type = string }
-variable "k8s_host"                   { type = string }
-variable "k8s_client_certificate"     { type = string }
-variable "k8s_client_key"             { type = string }
-variable "k8s_cluster_ca_certificate" { type = string }
 variable "vault_conf_persist"         { type = string }
 variable "vault_key_shares"           { type = number }
 variable "vault_key_threshold"        { type = number }
+
+variable "tls_crt" {
+  type      = string
+  sensitive = true
+}
+
+variable "tls_key" {
+  type      = string
+  sensitive = true
+}
+
+variable "k8s_host" {
+  type      = string
+  sensitive = true
+  default   = null
+}
+
+variable "k8s_client_certificate" {
+  type      = string
+  sensitive = true
+  default   = null
+}
+
+variable "k8s_client_key" {
+  type      = string
+  sensitive = true
+  default   = null
+}
+
+variable "k8s_cluster_ca_certificate" {
+  type      = string
+  sensitive = true
+  default   = null
+}
+
+variable "k8s_cluster_client_token" {
+  type      = string
+  sensitive = true
+  default   = null
+}
 
 variable "nr_of_vault_pods" { 
   type    = number
