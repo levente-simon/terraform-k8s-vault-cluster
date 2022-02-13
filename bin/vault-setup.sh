@@ -15,8 +15,8 @@ while true; do
   case $1 in
     -f)
      if [[ $(echo $2 | cut -d: -f1) == 'base64' ]]; then
-       CONFIG_DATA=$(echo $2 | cut -d: -f2)
-       KCONF="--kubeconfig <(echo $CONFIG_DATA | base64 --decode)"
+       export CONFIG_DATA=$(echo $2 | cut -d: -f2)
+       KCONF="--kubeconfig <(echo \$CONFIG_DATA | base64 --decode)"
      else
        KCONF="--kubeconfig=$2"
      fi
