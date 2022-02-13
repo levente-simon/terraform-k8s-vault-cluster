@@ -14,7 +14,12 @@ eval set -- ${ARGS}
 while true; do
   case $1 in
     -f)
-     KCONF="--kubeconfig=$2"
+     if [[ $(echo $2 | cut -d: -f1) == 'base64' ]]; then
+       CONFIG_DATA=$(echo $2 | cut -d: -f2)
+       KCONF="--kubeconfig <(echo $CONFIG_DATA | base64 --decode)"
+     else
+       KCONF="--kubeconfig=$2"
+     fi
      shift 2;;
     -n)
      NS="-n $2"
