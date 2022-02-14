@@ -56,15 +56,15 @@ while true; do
   esac
 done
 
-while [[ $(kubectl ${KCONF} ${NS} get pods | grep  Running | wc -l) -ne ${NROFPODS} ]] ; do
+while [[ $(eval "kubectl ${KCONF} ${NS} get pods" | grep  Running | wc -l) -ne ${NROFPODS} ]] ; do
   sleep 2
 done
 
-first_pod=$(kubectl ${KCONF} ${NS} get pods -o name|head -1)
+first_pod=$(eval "kubectl ${KCONF} ${NS} get pods -o name" | head -1)
 
-INITSTATUS=$(kubectl ${KCONF} ${NS} exec ${first_pod} -- vault status -format=json 2>/dev/null | jq -r .initialized)
+INITSTATUS=$(eval "kubectl ${KCONF} ${NS} exec ${first_pod} -- vault status -format=json" 2>/dev/null | jq -r .initialized)
 if [[ ${INITSTATUS} == "false" ]]; then
-  export INIT=$(kubectl ${KCONF} ${NS} exec ${first_pod} -- vault operator init -key-shares=${KSHS} -key-threshold=${KTSH} -format=json 2>/dev/null)
+  export INIT=$(eval "kubectl ${KCONF} ${NS} exec ${first_pod} -- vault operator init -key-shares=${KSHS} -key-threshold=${KTSH} -format=json" 2>/dev/null)
   RESULT=$(echo ${INIT} | jq  '{"unseal_keys":.unseal_keys_b64 | join(" "),"root_token":.root_token}')
 fi
 
@@ -80,12 +80,12 @@ fi
 read -ra UNSEAL <<< $(echo ${RESULT} | jq -r '.unseal_keys')
 
 if [[ ${#UNSEAL[@]} -ge ${KTSH} ]]; then
-  for pod in $(kubectl ${KCONF} ${NS} get pods -o go-template='{{ range  $i := .items }}{{ range .status.conditions }}{{ if (and (eq .type "Ready") (eq .status "False")) }}{{ $i.metadata.name}} {{ end }}{{ end }}{{ end }}'); do
-    while [[ $(kubectl ${KCONF} ${NS} exec ${pod} -- vault status -format=json 2>/dev/null | jq -r .initialized) != "true" ]] ; do
+  for pod in $(eval "kubectl ${KCONF} ${NS} get pods -o go-template='{{ range  $i := .items }}{{ range .status.conditions }}{{ if (and (eq .type \"Ready\") (eq .status \"False\")) }}{{ $i.metadata.name}} {{ end }}{{ end }}{{ end }}'"); do
+    while [[ $(eval "kubectl ${KCONF} ${NS} exec ${pod} -- vault status -format=json" 2>/dev/null | jq -r .initialized) != "true" ]] ; do
       sleep 5
     done
     for (( i=0; i <= ${KTSH}-1; ++i )); do
-      kubectl ${KCONF} ${NS} exec ${pod} -- vault operator unseal ${UNSEAL[$i]} 2>/dev/null 1>&2
+      eval "kubectl ${KCONF} ${NS} exec ${pod} -- vault operator unseal ${UNSEAL[$i]}" 2>/dev/null 1>&2
       sleep 2
     done
   done
