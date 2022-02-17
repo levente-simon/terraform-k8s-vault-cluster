@@ -2,8 +2,8 @@ terraform { }
 
 provider "kubernetes" {
   host                   = var.k8s_host
-#  client_certificate     = var.k8s_client_certificate
-#  client_key             = var.k8s_client_key
+  client_certificate     = var.k8s_client_certificate
+  client_key             = var.k8s_client_key
   cluster_ca_certificate = var.k8s_cluster_ca_certificate
   token                  = var.k8s_cluster_client_token
 }
@@ -11,8 +11,8 @@ provider "kubernetes" {
 provider "helm" {
   kubernetes {
     host                   = var.k8s_host
-#    client_certificate     = var.k8s_client_certificate
-#    client_key             = var.k8s_client_key
+    client_certificate     = var.k8s_client_certificate
+    client_key             = var.k8s_client_key
     cluster_ca_certificate = var.k8s_cluster_ca_certificate
     token                  = var.k8s_cluster_client_token
   }
