@@ -68,7 +68,7 @@ if [[ ${INITSTATUS} == "false" ]]; then
   RESULT=$(echo ${INIT} | jq  '{"unseal_keys":.unseal_keys_b64 | join(" "),"root_token":.root_token}')
 fi
 
-if [[ ! -z ${PERSIST} ]]; then
+if [[ ${PERSIST} != "false" ]]; then
   if [[ -f ${PERSIST} && -z ${RESULT} ]]; then
     RESULT=$(cat ${PERSIST})
   fi
@@ -80,7 +80,7 @@ fi
 read -ra UNSEAL <<< $(echo ${RESULT} | jq -r '.unseal_keys')
 
 if [[ ${#UNSEAL[@]} -ge ${KTSH} ]]; then
-  for pod in $(eval "kubectl ${KCONF} ${NS} get pods -o go-template='{{ range  $i := .items }}{{ range .status.conditions }}{{ if (and (eq .type \"Ready\") (eq .status \"False\")) }}{{ $i.metadata.name}} {{ end }}{{ end }}{{ end }}'"); do
+  for pod in $(eval "kubectl ${KCONF} ${NS} get pods -o go-template='{{ range  \$i := .items }}{{ range .status.conditions }}{{ if (and (eq .type \"Ready\") (eq .status \"False\")) }}{{ \$i.metadata.name}} {{ end }}{{ end }}{{ end }}'"); do
     while [[ $(eval "kubectl ${KCONF} ${NS} exec ${pod} -- vault status -format=json" 2>/dev/null | jq -r .initialized) != "true" ]] ; do
       sleep 5
     done

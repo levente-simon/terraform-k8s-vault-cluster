@@ -1,9 +1,13 @@
 variable "k8s_config_path"            { type = string }
 variable "vault_host"                 { type = string }
 variable "vault_ui_host"              { type = string }
-variable "vault_conf_persist"         { type = string }
 variable "vault_key_shares"           { type = number }
 variable "vault_key_threshold"        { type = number }
+
+variable "vault_conf_persist" {
+  type    = string
+  default = "false"
+}
 
 variable "tls_crt" {
   type      = string

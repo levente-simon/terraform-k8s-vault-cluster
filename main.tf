@@ -63,7 +63,7 @@ resource "kubernetes_secret" "tls_server" {
   }
 }
 
-resource "helm_release" "cert-manager" {
+resource "helm_release" "vault" {
   depends_on = [ kubernetes_namespace.vault ]
   name       = "vault"
 
@@ -81,17 +81,18 @@ resource "helm_release" "cert-manager" {
                ]
 }
 
-#data "external" "setup_vault" {
-#  depends_on  = [ helm_release.cert-manager ]
-#
-#  program     = [
-#                  "${path.module}/bin/vault-setup.sh",
-#                  "-f", var.k8s_config_path,
-#                  "-n", var.namespace,
-#                  "-i", var.nr_of_vault_pods,
-#                  "-p", var.vault_conf_persist,
-#                  "-s", var.vault_key_shares,
-#                  "-t", var.vault_key_threshold
-#                ]
-#}
+data "external" "setup_vault" {
+  depends_on  = [ helm_release.vault ]
+
+  program     = [
+                  "${path.module}/bin/vault-setup.sh",
+                  "-f", var.k8s_config_path,
+                  "-n", var.namespace,
+                  "-i", var.nr_of_vault_pods,
+                  "-p", var.vault_conf_persist,
+                  "-s", var.vault_key_shares,
+                  "-t", var.vault_key_threshold
+                ]
+}
+
 
