@@ -6,7 +6,7 @@ NROFPODS=3
 NS="-n vault"
 KSHS=5
 KTSH=3
-
+PERSIST="false"
 
 ARGS=$(getopt -o f:n:i:c:k:a:u:p:s:t:h -- $@)
 eval set -- ${ARGS}
