@@ -62,13 +62,15 @@ variable "vault_config" {
   type = string
   default = <<EOT
         ui = true
-          listener "tcp" {
+        listener "tcp" {
           address = "[::]:8200"
           cluster_address = "[::]:8201"
           tls_cert_file = "/vault/userconfig/tls-server/tls.crt"
           tls_key_file = "/vault/userconfig/tls-server/tls.key"
           tls_ca_cert_file = "/vault/userconfig/vault-ca-crt/tls.crt"
         }
+
+%s
     
         storage "raft" {
           path = "/vault/data"
@@ -100,5 +102,49 @@ variable "vault_config" {
           }
         }
         service_registration "kubernetes" {}
+EOT
+}
+
+variable "vault_unseal_token" {
+  type      = string
+  sensitive = true
+  default   = ""
+}
+
+variable "vault_unseal_address" {
+  type    = string
+  default = ""
+}
+
+variable "vault_unseal_key_name" {
+  type    = string
+  default = ""
+}
+
+variable "vault_unseal_mount_path" {
+  type    = string
+  default = ""
+}
+
+variable "vault_unseal_config" {
+  type    = string
+  default = <<EOT
+        seal "transit" {
+          address = "%s"
+          disable_renewal = "false"
+          key_name = "%s"
+          mount_path = "%s"
+          tls_skip_verify = "true"
+        }
+EOT
+}
+
+variable "vault_unseal_helm_cfg" {
+  type    = string
+  default = <<EOT
+  extraSecretEnvironmentVars:
+    - envName: VAULT_TOKEN
+      secretName: unseal-token
+      secretKey: TOKEN
 EOT
 }

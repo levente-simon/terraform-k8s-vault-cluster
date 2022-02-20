@@ -65,7 +65,7 @@ first_pod=$(eval "kubectl ${KCONF} ${NS} get pods -o name" | head -1)
 INITSTATUS=$(eval "kubectl ${KCONF} ${NS} exec ${first_pod} -- vault status -format=json" 2>/dev/null | jq -r .initialized)
 if [[ ${INITSTATUS} == "false" ]]; then
   export INIT=$(eval "kubectl ${KCONF} ${NS} exec ${first_pod} -- vault operator init -key-shares=${KSHS} -key-threshold=${KTSH} -format=json" 2>/dev/null)
-  RESULT=$(echo ${INIT} | jq  '{"unseal_keys":.unseal_keys_b64 | join(" "),"root_token":.root_token}')
+  RESULT=$(echo ${INIT} | jq  '{"unseal_keys":. | to_entries | map(select(.key | match("_keys_b64"))) | map(.value) | add | join(" "),"root_token":.root_token}')
 fi
 
 if [[ ${PERSIST} != "false" ]]; then

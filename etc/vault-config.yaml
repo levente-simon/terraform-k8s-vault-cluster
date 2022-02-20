@@ -4,6 +4,7 @@ global:
 injector:
   enabled: false
 server:
+%s
   extraEnvironmentVars:
     VAULT_CACERT: /vault/userconfig/vault-ca-crt/tls.crt
   extraVolumes:
