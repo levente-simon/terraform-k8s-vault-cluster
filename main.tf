@@ -89,7 +89,7 @@ resource "helm_release" "vault" {
   chart      = "vault"
   namespace  = var.namespace
   values     = [ "${format(file("${path.module}/etc/vault-config.yaml"),
-                     var.vault_unseal_helm_cfg,
+                     var.vault_unseal_token == "" ? "" : var.vault_unseal_helm_cfg,
                      var.vault_host,
                      local.vault_config,
                      var.vault_ui_host)}"
