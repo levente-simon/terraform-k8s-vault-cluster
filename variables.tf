@@ -105,6 +105,11 @@ variable "vault_config" {
 EOT
 }
 
+variable "vault_autounseal" {
+  type    = bool
+  default = false
+}
+
 variable "vault_unseal_token" {
   type      = string
   sensitive = true

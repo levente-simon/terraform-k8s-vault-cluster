@@ -65,7 +65,7 @@ resource "kubernetes_secret" "tls_server" {
 
 resource "kubernetes_secret" "vault_seal_token" {
   depends_on = [ kubernetes_namespace.vault ]
-  count      = var.vault_unseal_token == "" ? 0 : 1
+  count      = var.vault_autounseal ? 1 : 0
 
   metadata {
     name       = "unseal-token"
@@ -89,7 +89,7 @@ resource "helm_release" "vault" {
   chart      = "vault"
   namespace  = var.namespace
   values     = [ "${format(file("${path.module}/etc/vault-config.yaml"),
-                     var.vault_unseal_token == "" ? "" : var.vault_unseal_helm_cfg,
+                     var.vault_autounseal  ? var.vault_unseal_helm_cfg : "",
                      var.vault_host,
                      local.vault_config,
                      var.vault_ui_host)}"
