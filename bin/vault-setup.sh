@@ -40,7 +40,12 @@ while true; do
      KCONF="${KCONF} --server==$2"
      shift 2;;
     -p)
-     PERSIST="$2"
+     if [[ $(echo $2 | cut -d: -f1) == 'vault' ]]; then
+       PERSIST="vault"
+       VAULT_SECRET=$(echo $2 | cut -d: -f2)
+     else
+       PERSIST="$2"
+     fi
      shift 2;;
     -s)
      KSHS="$2"
@@ -69,11 +74,18 @@ if [[ ${INITSTATUS} == "false" ]]; then
 fi
 
 if [[ ${PERSIST} != "false" ]]; then
-  if [[ -f ${PERSIST} && -z ${RESULT} ]]; then
-    RESULT=$(cat ${PERSIST})
+  if [[ ${PERSIST} == "vault" ]]; then
+    if [[ $(vault kv get -non-interactive=true -field=vault_unseal_keys ${VAULT_SECRET} 2>/dev/null) && -z ${RESULT} ]]; then
+      RESULT=$(vault kv get -non-interactive=true -field=vault_unseal_keys ${VAULT_SECRET} 2>/dev/null)
+    fi
+    vault kv patch ${VAULT_SECRET} vault_unseal_keys=${RESULT}
+  else
+    if [[ -f ${PERSIST} && -z ${RESULT} ]]; then
+      RESULT=$(cat ${PERSIST})
+    fi
+    echo ${RESULT} > ${PERSIST}
+    chmod 600 ${PERSIST}
   fi
-  echo ${RESULT} > ${PERSIST}
-  chmod 600 ${PERSIST}
 fi  
 
 # IFS=", "
