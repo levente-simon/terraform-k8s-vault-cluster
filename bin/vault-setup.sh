@@ -2,7 +2,7 @@
 ###########################
 # Levente Simon
 
-NROFPODS=3
+# NROFPODS=3
 NS="-n vault"
 KSHS=5
 KTSH=3
@@ -61,7 +61,8 @@ while true; do
   esac
 done
 
-while [[ $(eval "kubectl ${KCONF} ${NS} get pods" | grep  Running | wc -l) -ne ${NROFPODS} ]] ; do
+# while [[ $(eval "kubectl ${KCONF} ${NS} get pods --no-headers" | grep  Running | wc -l) -ne ${NROFPODS} ]] ; do
+while [[ $(eval "kubectl ${KCONF} ${NS} get pods --no-headers" | grep -v Running | wc -l) -gt 0 ]] ; do
   sleep 2
 done
 
