@@ -62,7 +62,7 @@ while true; do
 done
 
 # while [[ $(eval "kubectl ${KCONF} ${NS} get pods --no-headers" | grep  Running | wc -l) -ne ${NROFPODS} ]] ; do
-while [[ $(eval "kubectl ${KCONF} ${NS} get pods --no-headers" | grep -v Running | wc -l) -gt 0 ]] ; do
+while [[ $(eval "kubectl ${KCONF} ${NS} get pods --no-headers" | grep -v Running | wc -l) -ne 0 ]] ; do
   sleep 2
 done
 
@@ -76,10 +76,10 @@ fi
 
 if [[ ${PERSIST} != "false" ]]; then
   if [[ ${PERSIST} == "vault" ]]; then
-    if [[ $(vault kv get -non-interactive=true -field=vault_unseal_keys ${VAULT_SECRET} 2>/dev/null) && -z ${RESULT} ]]; then
-      RESULT=$(vault kv get -non-interactive=true -field=vault_unseal_keys ${VAULT_SECRET} 2>/dev/null)
+    if [[ $(vault kv get -non-interactive=true -field=vault-secret ${VAULT_SECRET} 2>/dev/null) && -z ${RESULT} ]]; then
+      RESULT=$(vault kv get -non-interactive=true -field=vault-secret ${VAULT_SECRET} | base64 --decode 2>/dev/null)
     fi
-    vault kv patch ${VAULT_SECRET} vault_unseal_keys=${RESULT}
+    vault kv patch ${VAULT_SECRET} vault-secret=$(echo ${RESULT} | base64 -w 0) > /dev/null 2>&1
   else
     if [[ -f ${PERSIST} && -z ${RESULT} ]]; then
       RESULT=$(cat ${PERSIST})
