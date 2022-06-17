@@ -71,7 +71,16 @@ variable "vault_config" {
         }
 
 %s
+
+%s
     
+        service_registration "kubernetes" {}
+EOT
+}
+	
+variable "vault_storage_config" {
+  type = string
+  default = <<EOT
         storage "raft" {
           path = "/vault/data"
             retry_join {
@@ -101,10 +110,18 @@ variable "vault_config" {
             server_stabilization_time = "10s"
           }
         }
-        service_registration "kubernetes" {}
 EOT
 }
 
+variable "vault_ha_enabled" {
+  type = bool
+  default = true
+}
+
+variable "vault_ha_replicas" {
+  type = number
+  default = 3
+}
 variable "vault_autounseal" {
   type    = bool
   default = false

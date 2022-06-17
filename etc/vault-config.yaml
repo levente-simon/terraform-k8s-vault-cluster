@@ -24,8 +24,8 @@ server:
   dataStorage:
     size: "6Gi"
   ha:
-    enabled: true
-    replicas: 3
+    enabled: %t
+    replicas: %d
     raft:
       enabled: true
       setNodeId: true

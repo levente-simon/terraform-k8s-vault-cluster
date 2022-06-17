@@ -91,6 +91,8 @@ resource "helm_release" "vault" {
   values     = [ "${format(file("${path.module}/etc/vault-config.yaml"),
                      var.vault_autounseal  ? var.vault_unseal_helm_cfg : "",
                      var.vault_host,
+                     var.vault_ha_enabled,
+                     var.vault_ha_replicas,
                      local.vault_config,
                      var.vault_ui_host)}"
                ]
