@@ -93,8 +93,6 @@ resource "helm_release" "vault" {
                      var.vault_audit_storage_size,
                      var.vault_host,
                      var.vault_data_storage_size,
-                     var.vault_ha_enabled,
-                     var.vault_ha_replicas,
                      local.vault_config,
                      var.vault_ui_host)}"
                ]
