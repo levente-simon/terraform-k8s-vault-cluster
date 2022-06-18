@@ -14,7 +14,7 @@ server:
       name: vault-ca-crt
   auditStorage:
     enabled: true
-    size:  "6Gi"
+    size:  %s
   standalone:
     enabled: false
   service:
@@ -22,14 +22,7 @@ server:
       external-dns.alpha.kubernetes.io/hostname: %s
     type: "LoadBalancer"
   dataStorage:
-    size: "6Gi"
-  ha:
-    enabled: %t
-    replicas: %d
-    raft:
-      enabled: true
-      setNodeId: true
-      config: |
+    size: %s
 %s
 ui:
   enabled: true

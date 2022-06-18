@@ -58,9 +58,52 @@ variable "namespace" {
   default = "vault"
 }
 
-variable "vault_config" {
+variable "vault_audit_storage_size" {
+  type    = string
+  default = "6Gi"
+}
+
+variable "vault_data_storage_size" {
+  type    = string
+  default = "6Gi"
+}
+
+variable "vault_sa_config" {
   type = string
   default = <<EOT
+  ha:
+    enabled: false
+  standalone:
+    enabled: true
+    config: |
+      ui = true
+      listener "tcp" {
+        address = "[::]:8200"
+        cluster_address = "[::]:8201"
+        tls_cert_file = "/vault/userconfig/tls-server/tls.crt"
+        tls_key_file = "/vault/userconfig/tls-server/tls.key"
+        tls_ca_cert_file = "/vault/userconfig/vault-ca-crt/tls.crt"
+      }
+
+%s
+
+      storage "file" {
+        path = "/vault/data"
+      }
+      service_registration "kubernetes" {}
+EOT
+}
+
+variable "vault_ha_config" {
+  type = string
+  default = <<EOT
+  ha:
+    enabled: true
+    replicas: 3
+    raft:
+      enabled: true
+      setNodeId: true
+      config: |
         ui = true
         listener "tcp" {
           address = "[::]:8200"
@@ -72,15 +115,6 @@ variable "vault_config" {
 
 %s
 
-%s
-    
-        service_registration "kubernetes" {}
-EOT
-}
-	
-variable "vault_storage_config" {
-  type = string
-  default = <<EOT
         storage "raft" {
           path = "/vault/data"
             retry_join {
@@ -110,18 +144,16 @@ variable "vault_storage_config" {
             server_stabilization_time = "10s"
           }
         }
+    
+        service_registration "kubernetes" {}
 EOT
 }
-
+	
 variable "vault_ha_enabled" {
   type = bool
   default = true
 }
 
-variable "vault_ha_replicas" {
-  type = number
-  default = 3
-}
 variable "vault_autounseal" {
   type    = bool
   default = false
