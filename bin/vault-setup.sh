@@ -79,7 +79,7 @@ if [[ ${PERSIST} != "false" ]]; then
     if [[ $(vault kv get -non-interactive=true -field=vault-secret ${VAULT_SECRET} > /dev/null 2>&1) && -z ${RESULT} ]]; then
       RESULT=$(vault kv get -non-interactive=true -field=vault-secret ${VAULT_SECRET} | base64 --decode 2>/dev/null)
     fi
-    vault kv patch ${VAULT_SECRET} vault-secret="$(echo ${RESULT} | base64 -w 0)" root_token="$(echo ${RESULT} | jq -r '.root_token')" > /dev/null 2>&1
+    eval "vault kv patch ${VAULT_SECRET} vault-secret=\$(echo ${RESULT} | base64 -w 0) root_token=\$(echo ${RESULT} | jq -r '.root_token')" 2>/dev/null 1>&2
   else
     if [[ -f ${PERSIST} && -z ${RESULT} ]]; then
       RESULT=$(cat ${PERSIST})
