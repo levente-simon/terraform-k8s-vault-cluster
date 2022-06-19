@@ -86,6 +86,7 @@ variable "vault_sa_config" {
 
       storage "raft" {
         path = "/vault/data"
+        node_id = "raft_node_1"
       }
       service_registration "kubernetes" {}
 EOT
