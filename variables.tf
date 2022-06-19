@@ -71,8 +71,6 @@ variable "vault_data_storage_size" {
 variable "vault_sa_config" {
   type = string
   default = <<EOT
-  ha:
-    enabled: false
   standalone:
     enabled: true
     config: |
@@ -82,12 +80,11 @@ variable "vault_sa_config" {
         cluster_address = "[::]:8201"
         tls_cert_file = "/vault/userconfig/tls-server/tls.crt"
         tls_key_file = "/vault/userconfig/tls-server/tls.key"
-        tls_ca_cert_file = "/vault/userconfig/vault-ca-crt/tls.crt"
       }
 
 %s
 
-      storage "file" {
+      storage "raft" {
         path = "/vault/data"
       }
       service_registration "kubernetes" {}
