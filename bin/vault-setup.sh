@@ -8,56 +8,51 @@ KSHS=5
 KTSH=3
 PERSIST="false"
 
-ARGS=$(getopt -o f:n:i:c:k:a:u:p:s:t:h -- $@)
-eval set -- ${ARGS}
-
-while true; do
-  case $1 in
-    -f)
-     if [[ $(echo $2 | cut -d: -f1) == 'base64' ]]; then
-       export CONFIG_DATA=$(echo $2 | cut -d: -f2)
+while getopts f:n:i:c:k:a:u:p:s:t:h arg; do
+  case ${arg} in
+    f)
+     if [[ $(echo ${OPTARG} | cut -d: -f1) == 'base64' ]]; then
+       export CONFIG_DATA=$(echo ${OPTARG} | cut -d: -f2)
        KCONF="--kubeconfig <(echo \$CONFIG_DATA | base64 --decode)"
      else
-       KCONF="--kubeconfig=$2"
+       KCONF="--kubeconfig=${OPTARG}"
      fi
-     shift 2;;
-    -n)
-     NS="-n $2"
-     shift 2;;
-    -i)
-     NROFPODS=$2
-     shift 2;;
-    -c)
-     KCONF="${KCONF} --client-certificate=$2"
-     shift 2;;
-    -k)
-     KCONF="${KCONF} --client-key=$2"
-     shift 2;;
-    -a)
-     KCONF="${KCONF} --certificate-authority=$2"
-     shift 2;;
-    -u)
-     KCONF="${KCONF} --server==$2"
-     shift 2;;
-    -p)
-     if [[ $(echo $2 | cut -d: -f1) == 'vault' ]]; then
+     ;;
+    n)
+     NS="-n ${OPTARG}"
+     ;;
+    i)
+     NROFPODS=${OPTARG}
+     ;;
+    c)
+     KCONF="${KCONF} --client-certificate=${OPTARG}"
+     ;;
+    k)
+     KCONF="${KCONF} --client-key=${OPTARG}"
+     ;;
+    a)
+     KCONF="${KCONF} --certificate-authority=${OPTARG}"
+     ;;
+    u)
+     KCONF="${KCONF} --server==${OPTARG}"
+     ;;
+    p)
+     if [[ $(echo ${OPTARG} | cut -d: -f1) == 'vault' ]]; then
        PERSIST="vault"
-       VAULT_SECRET=$(echo $2 | cut -d: -f2)
+       VAULT_SECRET=$(echo ${OPTARG} | cut -d: -f2)
      else
-       PERSIST="$2"
+       PERSIST="${OPTARG}"
      fi
-     shift 2;;
-    -s)
-     KSHS="$2"
-     shift 2;;
-    -t)
-     KTSH="$2"
-     shift 2;;
-    -h)
+     ;;
+    s)
+     KSHS="${OPTARG}"
+     ;;
+    t)
+     KTSH="${OPTARG}"
+     ;;
+    h)
      echo "Usage: $(basename $0) -i <number-of-pods> -c <client-certificate> -k <client-key> -a <certificate-authority> -u <server> -n <namespace> -p <file-to-persist> -s <key-shares> -t <key-threshold> "
      exit;;
-    --)
-     break;;
   esac
 done
 
