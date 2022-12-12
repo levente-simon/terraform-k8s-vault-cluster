@@ -94,7 +94,8 @@ resource "helm_release" "vault" {
                      var.vault_host,
                      var.vault_data_storage_size,
                      local.vault_config,
-                     var.vault_ui_host)}"
+                     var.vault_ui_host,
+                     var.vault_ui_port)}"
                ]
 }
 
