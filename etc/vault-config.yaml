@@ -25,7 +25,7 @@ server:
     size: %s
 %s
 ui:
-  enabled: true
+  enabled: %t
   annotations: 
     external-dns.alpha.kubernetes.io/hostname: %s
   serviceType: "LoadBalancer"

@@ -4,6 +4,10 @@ variable "vault_ui_host"              { type = string }
 variable "vault_key_shares"           { type = number }
 variable "vault_key_threshold"        { type = number }
 
+variable "vault_ui_enabled" {
+  type    = bool
+  default = true
+}
 variable "vault_ui_port" {
   type    = number
   default = 8200
