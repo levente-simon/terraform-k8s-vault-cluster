@@ -88,6 +88,7 @@ resource "helm_release" "vault" {
   repository = "https://helm.releases.hashicorp.com"
   chart      = "vault"
   namespace  = var.namespace
+  wait       = false
   values     = [ "${format(file("${path.module}/etc/vault-config.yaml"),
                      var.vault_autounseal  ? var.vault_unseal_helm_cfg : "",
                      var.vault_audit_storage_size,
