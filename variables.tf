@@ -1,14 +1,14 @@
-variable "k8s_config_path"            { type = string }
+# variable "k8s_config_path"            { type = string }
 variable "vault_host"                 { type = string }
 variable "vault_ui_host"              { type = string }
-variable "vault_key_shares" {
-  type    = number
-  default = 5
-}
-variable "vault_key_threshold" {
-  type     = number
-  default  = 3
-}
+# variable "vault_key_shares" {
+#   type    = number
+#   default = 5
+# }
+# variable "vault_key_threshold" {
+#   type     = number
+#   default  = 3
+# }
 
 variable "vault_ui_enabled" {
   type    = bool
@@ -18,10 +18,10 @@ variable "vault_ui_port" {
   type    = number
   default = 8200
 }
-variable "vault_conf_persist" {
-  type    = string
-  default = "false"
-}
+# variable "vault_conf_persist" {
+#   type    = string
+#   default = "false"
+# }
 
 variable "tls_crt" {
   type      = string
@@ -62,10 +62,10 @@ variable "k8s_cluster_client_token" {
   default   = ""
 }
 
-variable "nr_of_vault_pods" { 
-  type    = number
-  default = 3
-}
+# variable "nr_of_vault_pods" { 
+#   type    = number
+#   default = 3
+# }
 
 variable "namespace" {
   type    = string
